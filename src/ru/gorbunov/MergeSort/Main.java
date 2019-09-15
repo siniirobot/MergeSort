@@ -2,6 +2,9 @@ package ru.gorbunov.MergeSort;
 
 import ru.gorbunov.MergeSort.Sorting.MergeSort;
 
+import java.io.File;
+import java.io.IOException;
+
 public class Main {
     /**
      * При запуске проверяется правильность входных аргументов.
@@ -40,15 +43,40 @@ public class Main {
                 throw new IllegalArgumentException("Аргументы необходимо вводить согласно правилам указаным к заданию");
             } else {
                 outputFile = args[i];
+                try {
+                    checkFileFormat(outputFile);
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                    System.exit(0);
+                }
                 i++;
             }
 
             String[] files = new String[args.length - i];
             System.arraycopy(args, i, files, 0, files.length);
+            try {
+                for (String path : files) {
+                    if (checkFileFormat(path) && !new File(path).exists()) {
+                        throw new IOException(path + " не является файлом или файл отсутствуют");
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                System.exit(0);
+            }
+
             MergeSort mergeSort = new MergeSort(keys, outputFile, files);
             mergeSort.Merge();
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static boolean checkFileFormat(String path) throws IOException {
+        int startFileFormat = path.lastIndexOf(".");
+        if (startFileFormat < 0 || !path.substring(startFileFormat).equals(".txt")){
+            throw new IOException(path + " формат файла является некорректным");
+        }
+        return true;
     }
 }

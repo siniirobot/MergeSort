@@ -220,9 +220,7 @@ public class MergeSort {
             }
         }
         File temporaryFile = new File("temporaryFile.txt");
-        if (temporaryFile.delete()) {
-            System.out.println("Временный файл удален");
-        }
+        temporaryFile.deleteOnExit();
     }
 
     /**
